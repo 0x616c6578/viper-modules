@@ -18,6 +18,7 @@ class Extract(Module):
         super(Extract, self).__init__()
 
     def run(self):
+        db = Database()
         parent = __sessions__.current.file
 
         with TemporaryDirectory() as tmpdir:
@@ -30,7 +31,8 @@ class Extract(Module):
                 __sessions__.new(file_path)
                 # TODO(Alex): Add parameter to the Store Command so a parent can be defined when the file is stored.
                 Store().run()
-                Database().add_parent(__sessions__.current.file.sha256, parent.sha256)
+                db.add_parent(__sessions__.current.file.sha256, parent.sha256)
+                db.add_tags(__sessions__.current.file.sha256, "Extracted")
 
         __sessions__.new(parent.path)
 
